@@ -19,6 +19,8 @@ page=1
 
 while true; do
 
+echo "index page $page ..."
+
 curl -XPOST \
     -H 'SOAPAction: "http://ris.bka.gv.at/ogd/V2_5/SearchDocuments"' \
     -H 'Content-Type: text/xml; charset=utf-8' \
@@ -46,6 +48,11 @@ EOT
 if grep 'Die Seitennummer' bundesnormen/index-${page}.xml; then
   break
 fi
+
+for url in $(xmllint bundesnormen/index-1.xml --format | awk '/<Url>(.*\.xml)</ { FS=">"; $0=$2; print $1; }' | sed -e 's!<.*!!');
+do
+  (cd bundesnormen; curl -O "$url")
+done
 
 page=$((page+1))
 
