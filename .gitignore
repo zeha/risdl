@@ -1,2 +1,5 @@
 /bundesnormen
 /*.tar.xz
+.idea/
+__pycache__/
+

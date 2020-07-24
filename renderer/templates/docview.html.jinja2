@@ -1,0 +1,44 @@
+<!doctype html>
+<h1>Metadata</h1>
+<b>meta:</b> docid: {{ data['docid'] }}, lawid: {{ data['lawid'] }}, docid_old: {{ data['docid_old'] }}<br>
+<b>valid:</b> {{ data['valid_from'] }} to {{ data['valid_to'] }}<br>
+<b>Section:</b> {{ data['section'] }}<br>
+<b>title:</b> {{ data['title'] }}<br>
+<b>title_short:</b> {{ data['title_short'] }}<br>
+<b>title_long:</b> {{ (data['title_long'] or '').replace('\n', '&mdash;') }}<br>
+<a href="https://www.ris.bka.gv.at/Dokumente/Bundesnormen/{{ data['docid'] }}/{{ data['docid'] }}.xml">RIS XML</a> | <a href="https://www.ris.bka.gv.at/Dokumente/Bundesnormen/{{ data['docid'] }}/{{ data['docid'] }}.html">RIS HTML</a>
+<br>
+{% for key in meta_keys %}
+    {% if data[key] and key not in ['docid', 'lawid', 'docid_old', 'title', 'title_short', 'title_long', 'section', 'part'] %}
+        <b>{{ key }}</b>:
+        {% if data[key] is string %}
+            {{ data[key] }}
+        {% else %}
+            {% for val in data[key] %}{{ val }} {% if not loop.last %}&nbsp;&mdash;&nbsp; {% endif %}{% endfor %}
+        {% endif %}
+    <br>
+    {% endif %}
+{% endfor %}
+{% for key in date_keys %}
+    {% if data[key] and key not in ['valid_to', 'valid_from'] %}
+        <b>{{ key }}</b>: {{ data[key] }}<br>
+    {% endif %}
+{% endfor %}
+<br>
+
+<h2>Content</h2>
+
+<h3>part: {{ data['part'] }}</h3>
+
+{% for key in text_keys %}
+    {% if data[key] %}
+        {{ key }}:<br>
+        <span style="font-family: monospace">{{ data[key] | render_text }}</span><br>
+        <br>
+    {% endif %}
+{% endfor %}
+
+
+<br>
+<br>
+<pre>{{ xmlstr|e }}</pre>
