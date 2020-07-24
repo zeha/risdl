@@ -49,13 +49,6 @@ if grep 'Die Seitennummer' bundesnormen/index-${page}.xml; then
   break
 fi
 
-for url in $(xmllint bundesnormen/index-1.xml --format | awk '/<Url>(.*\.xml)</ { FS=">"; $0=$2; print $1; }' | sed -e 's!<.*!!');
-do
-  (cd bundesnormen; curl -O "$url")
-done
-
 page=$((page+1))
-
-break
 
 done
